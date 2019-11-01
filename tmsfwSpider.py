@@ -109,8 +109,9 @@ def one_driver_ticket(driver, area):
 
     # driver.find_element_by_xpath('//*[@id="prh"]').send_keys('250')
     driver.find_element_by_id('prh').send_keys('250')
-    # driver.find_element_by_xpath('//*[@id="search_all"]/div/ul[16]/li[7]/div').click()
-    driver.find_element_by_class_name('queding ml10 CP').click()
+    driver.find_element_by_xpath('//*[@id="search_all"]/div/ul[16]/li[7]/div').click()
+    # driver.find_element_by_class_name('queding ml10 CP').click()
+    driver.find_element_by_css_selector('')
     time.sleep(5)  # 控制间隔时间，等待浏览器反映
 
     flag = True
