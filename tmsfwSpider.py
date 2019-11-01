@@ -107,8 +107,10 @@ def one_driver_ticket(driver, area):
     # driver.find_element_by_id('pr_200_300').click()
     # driver.find_element_by_id('ro_3')
 
-    driver.find_element_by_xpath('//*[@id="prh"]').send_keys('250')
-    driver.find_element_by_xpath('//*[@id="search_all"]/div/ul[16]/li[7]/div').click()
+    # driver.find_element_by_xpath('//*[@id="prh"]').send_keys('250')
+    driver.find_element_by_id('prh').send_keys('250')
+    # driver.find_element_by_xpath('//*[@id="search_all"]/div/ul[16]/li[7]/div').click()
+    driver.find_element_by_class_name('queding ml10 CP').click()
     time.sleep(5)  # 控制间隔时间，等待浏览器反映
 
     flag = True
@@ -117,7 +119,8 @@ def one_driver_ticket(driver, area):
         # 保存页面
         # print driver.page_source
         # source_code = driver.find_element_by_xpath("//*").get_attribute("outerHTML")
-        source_code = driver.find_element_by_xpath('/html/body/div[5]/div[2]/div[2]').get_attribute("outerHTML")
+        # source_code = driver.find_element_by_xpath('/html/body/div[5]/div[2]/div[2]').get_attribute("outerHTML")
+        source_code = driver.find_element_by_class_name('picNews_list').get_attribute("outerHTML")
         print(type(source_code))
         dstdir = './buyHouse/{}/'.format(date)
         if not exists(dstdir):
