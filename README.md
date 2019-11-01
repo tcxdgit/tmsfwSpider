@@ -15,7 +15,7 @@
  
 `pip install -r requirements.txt`
 
-#### 2 安装chrom浏览器驱动（windows)
+#### 2 安装chrome浏览器驱动（这里是在windows上开发的, 需安装Chrome)
  下载地址: https://sites.google.com/a/chromium.org/chromedriver/home
  
  下载完成后运行.exe文件
