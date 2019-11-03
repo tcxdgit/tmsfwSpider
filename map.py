@@ -2,14 +2,13 @@ import pandas as pd
 
 import json
 from urllib.request import urlopen, quote
-import requests
+from setting import AK_BAIDU
 
 
 def getlnglat(address):
     url = 'http://api.map.baidu.com/geocoding/v3/'
     output = 'json'
-    ak = 'j8oq8dtVx2FP9hRLlB8gguVCi30K1yUN'  # 百度地图ak，具体申请自行百度，提醒需要在“控制台”-“设置”-“启动服务”-“正逆地理编码”，启动
-    # EdjWGv3caPLjuh1II4LQNWaMglwNmlNg
+    ak = AK_BAIDU  # 百度地图ak，具体申请自行百度，提醒需要在“控制台”-“设置”-“启动服务”-“正逆地理编码”，启动
     address = quote(address)  # 由于本文地址变量为中文，为防止乱码，先用quote进行编码
     uri = url + '?' + 'address=' + address + '&output=' + output + '&ak=' + ak
     # print(uri)
@@ -25,7 +24,7 @@ def getlnglat(address):
     return lat, lng   # 纬度 latitude, 经度 longitude
 
 
-data = pd.read_csv('E:\PycharmProjects\lianjia-beike-spider\data\lianjia\ershou\hz\\20191027\\all.csv')
+data = pd.read_csv('E:\PycharmProjects\\tmsfwSpider\\buyHouse\\2019-11-03\\all_tmsfw.csv')
 # data
 
 for indexs in data.index:
@@ -65,7 +64,12 @@ for indexs in data.index:
 # data_html.to_csv("data_html.csv",encoding="gbk")
 # data_html
 
-with open("data_html.csv", 'w', encoding="gbk") as f_html:
-    for data in data_html:
-        f_html.write(data + ',\n')
+with open("loc_html.json", 'w', encoding="utf_8_sig") as f_html:
+    data_num = len(data_html)
+    for i, data in enumerate(data_html):
+        if i < (data_num - 1):
+            f_html.write(data + ',\n')
+        else:
+            # 最后一行去掉','
+            f_html.write(data)
 

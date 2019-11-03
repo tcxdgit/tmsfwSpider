@@ -2,10 +2,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 
-price_limit_upper = 230
-
-
-
+price_limit_upper = 215
 
 def html_parser(html):
     soup = BeautifulSoup(html, "lxml")
@@ -56,6 +53,8 @@ def html_parser(html):
             year = re.sub('建成', '', year)
 
             _house_size = re.findall('面积(.*)㎡', title_text)
+            room_num = re.findall('.室.*厅.*卫', title_text)
+            room_num = re.sub(' ', '', room_num[0])
 
             if _house_size:
                 house_size = _house_size[0]
@@ -68,12 +67,11 @@ def html_parser(html):
 
             if int(price) < int(price_limit_upper):
                 if year == 'null' or int(year) > 1999:
-                    result = [district, area, xiaoqu, title_text, price, desc, year, house_size, url]
+                    result = [district, area, xiaoqu, price, desc, year, house_size, room_num, url]
                     string_r = ','.join(result)
                     results.append(string_r)
-        except:
+        except AttributeError:
             continue
-
     return results
 
 
@@ -86,7 +84,7 @@ def parser(html_dir):
             results += results_page
 
     with open(os.path.join(html_dir, 'all_tmsfw.csv'), 'w', encoding='utf_8_sig') as f_csv:
-        f_csv.write('区域,版块,小区,标题,总价(万起),描述,年份,面积(㎡),url\n')
+        f_csv.write('区域,版块,小区,总价(万起),描述,年份,面积(㎡), 户型, url\n')
 
         for r in results:
             f_csv.write(r + '\n')

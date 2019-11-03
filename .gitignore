@@ -1,3 +1,5 @@
 ticket/*
 buyHouse/*
 *.log
+setting.py
+*.json
