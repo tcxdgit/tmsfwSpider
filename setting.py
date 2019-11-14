@@ -1,2 +1,2 @@
-AK_BAIDU = 'j8oq8dtVx2FP9hRLlB8gguVCi30K1yUN'
-# EdjWGv3caPLjuh1II4LQNWaMglwNmlNg
+# AK_BAIDU = 'j8oq8dtVx2FP9hRLlB8gguVCi30K1yUN'
+AK_BAIDU = 'EdjWGv3caPLjuh1II4LQNWaMglwNmlNg'

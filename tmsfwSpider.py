@@ -9,7 +9,7 @@ from os.path import exists
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import re
-
+import random
 
 site = 'http://www.howzf.com/esfn/EsfnSearch_csnew.jspx'
 
@@ -46,6 +46,7 @@ area_limit_lower = str(50)
 js = "var q=document.body.scrollTop=10000"  # documentElement表示获取body节点元素
 
 
+
 def one_driver_house(driver, area):
     # time = datetime.datetime.now()
     date = datetime.date.today()
@@ -74,6 +75,8 @@ def one_driver_house(driver, area):
 
     for page_num in range(1, total_page_num + 1):
         # 保存页面
+        if page_num % 36 == 0:
+            time.sleep(20)
         source_code = driver.find_element_by_class_name('picNews_list').get_attribute("outerHTML")
         print(type(source_code))
         dstdir = './buyHouse/{}/'.format(date)
@@ -93,14 +96,21 @@ def one_driver_house(driver, area):
         try:
             # 滑动滚动条
             driver.execute_script(js)
-            time.sleep(5)
+            # time.sleep(15)
+
+            sleep_time = random.randrange(15, 50)
+            time.sleep(sleep_time)
 
             # 点击下一页
             next_page.click()
-            time.sleep(5)  # 控制间隔时间，等待浏览器反映
+            time.sleep(15)  # 控制间隔时间，等待浏览器反映
         except Exception as e:
             print('next_page could not be clicked, area is :{} and page is {}'.format(area, page_num+1))
             print(e)
+            driver.refresh()
+
+        sleep_time = random.randrange(10, 30)
+        time.sleep(sleep_time)
 
 
 def one_driver_new_house(driver):
@@ -183,7 +193,7 @@ def house_worker_no_proxy(area, new_house=False):
     driver.maximize_window()  # 将浏览器最大化显示
     driver.refresh()
 
-    time.sleep(5)  # 控制间隔时间，等待浏览器反映
+    time.sleep(10)  # 控制间隔时间，等待浏览器反映
     if new_house:
         pass
     else:

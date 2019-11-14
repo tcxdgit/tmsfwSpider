@@ -19,7 +19,7 @@
  
  将exe文件添加到环境变量Path
  
-####(2)安装Firefox浏览器驱动(未成功，TODO)
+#### (2)安装Firefox浏览器驱动(未成功，TODO)
  下载地址:https://github.com/mozilla/geckodriver/releases
  
  解压后放到firefox安装路径下面
