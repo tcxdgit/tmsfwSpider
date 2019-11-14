@@ -37,6 +37,9 @@
 
 ### 5 在百度地图上标记出小区
 #### 5.1 生成坐标:
-    `python map.py`
+    
+    python map.py
+    
 #### 5.2 生成图片(http://lbsyun.baidu.com/jsdemo.htm#c1_19)
+
     参考博客 https://www.jianshu.com/p/1a9531d2f153
