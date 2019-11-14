@@ -7,8 +7,6 @@ import codecs
 from os import makedirs
 from os.path import exists
 from selenium import webdriver
-from bs4 import BeautifulSoup
-import re
 import random
 
 site = 'http://www.howzf.com/esfn/EsfnSearch_csnew.jspx'
@@ -40,17 +38,19 @@ wylx_map = {"住宅": "wylx_10",
             "非住宅": "wylx_20"}
 """
 
-price_limit_upper = str(230)
+# 总价上限
+price_limit_upper = str(220)
 
+# 面积下限
 area_limit_lower = str(50)
 js = "var q=document.body.scrollTop=10000"  # documentElement表示获取body节点元素
-
 
 
 def one_driver_house(driver, area):
     # time = datetime.datetime.now()
     date = datetime.date.today()
 
+    # 选择区域
     driver.find_element_by_id(area_map[area]).click()
     time.sleep(5)
 
@@ -98,27 +98,28 @@ def one_driver_house(driver, area):
             driver.execute_script(js)
             # time.sleep(15)
 
-            sleep_time = random.randrange(15, 50)
+            sleep_time = random.randrange(10, 20)
             time.sleep(sleep_time)
 
             # 点击下一页
             next_page.click()
-            time.sleep(15)  # 控制间隔时间，等待浏览器反映
+            time.sleep(5)  # 控制间隔时间，等待浏览器反映
         except Exception as e:
             print('next_page could not be clicked, area is :{} and page is {}'.format(area, page_num+1))
             print(e)
             driver.refresh()
 
-        sleep_time = random.randrange(10, 30)
+        sleep_time = random.randrange(10, 20)
         time.sleep(sleep_time)
 
 
-def one_driver_new_house(driver):
+def one_driver_new_house(driver, area):
     # time = datetime.datetime.now()
     date = datetime.date.today()
 
-    # driver.find_element_by_id(area_map[area]).click()
-    # time.sleep(5)
+    # 选择区域
+    driver.find_element_by_id(area_map[area]).click()
+    time.sleep(5)
 
     # 物业类型
     driver.find_element_by_id('wylx_10').click()
@@ -164,17 +165,20 @@ def one_driver_new_house(driver):
         try:
             # 滑动滚动条
             driver.execute_script(js)
-            time.sleep(10)
+            sleep_time = random.randrange(10, 20)
+            time.sleep(sleep_time)
 
             # 点击下一页
             next_page.click()
             time.sleep(10)  # 控制间隔时间，等待浏览器反映
         except Exception as e:
-            print('next_page could not be clicked, area is :{} and page is {}'.format(area, page_num+1))
+            print('next_page could not be clicked, page is {}'.format(page_num+1))
             print(e)
 
+        time.sleep(5)
 
-def house_worker_no_proxy(area, new_house=False):
+
+def house_worker_no_proxy(area, only_new_house):
 
     # 用chrome驱动
     chrome_driver = r"D:\Program Files\chromedriver.exe"
@@ -193,77 +197,32 @@ def house_worker_no_proxy(area, new_house=False):
     driver.maximize_window()  # 将浏览器最大化显示
     driver.refresh()
 
-    time.sleep(10)  # 控制间隔时间，等待浏览器反映
-    if new_house:
-        pass
+    time.sleep(5)  # 控制间隔时间，等待浏览器反映
+    if only_new_house:
+        one_driver_new_house(driver, area)
     else:
         one_driver_house(driver, area)
-        driver.close()
+
+    driver.close()
 
 
-def html_parser(html):
-    soup = BeautifulSoup(html, "lxml")
-
-    # 获得有小区信息的panel
-    house_elements = soup.find_all('div', class_="houseBox2 borderBottom")
-    results = []
-    for house_elem in house_elements:
-        title = house_elem.find('a', class_='fl w480')
-
-        title_text = title.text.strip()
-
-        xiaoqu = title_text.split(' ')[0]
-
-        url = title.get('href', 'null')
-
-        if url == 'null':
-            pass
-        else:
-            url = 'http://www.howzf.com' + url
-
-        info_lines = house_elem.find_all('div', class_='house_listinfo_line f14')
-
-        district, desc = 'null', 'null'
-        for info in info_lines:
-            if info.find(name='a'):
-                district = info.text.strip()
-            else:
-                desc = info.text.strip()
-
-        district = re.sub('[\r\n]', '', district)
-        desc = re.sub('[\r\n]', '', desc)
-
-        # year = 'null'
-
-        year = desc.split('|')[-1].strip('')
-        year = re.sub('建成', '', year)
-
-        price = house_elem.find('div', class_="house_price_total")
-
-        price = price.find('strong').text.strip()
-
-        if int(price) < int(price_limit_upper):
-            if year == 'null' or int(year) > 1999:
-                result = [district, xiaoqu, title_text, price, desc, year, url]
-                string_r = ','.join(result)
-                results.append(string_r)
-
-    return results
-
-
-def get_areas(areas):
-    for area in areas:
-        house_worker_no_proxy(area)
-
-
-if __name__ == '__main__':
+def get_areas(areas, only_new_house=False):
+    """
+    :param areas: 要爬取的区域
+    :param only_new_house: 是否只看新上房源
+    :return:
+    """
     print("start")
     start = datetime.datetime.now()
-    # all_ticket_proxy() # proxy
-    # all_ticket_no_proxy() # no proxy
-    # areas_list = ['上城', '下城', '江干', '拱墅', '西湖', '滨江', '之江', '下沙', '萧山', '余杭']
-    areas_list = ['余杭']
-    get_areas(areas_list)
+    for area in areas:
+        house_worker_no_proxy(area, only_new_house=only_new_house)
+
     end = datetime.datetime.now()
     print("end")
     print("time: ", end-start)
+
+
+if __name__ == '__main__':
+    # areas_list = ['上城', '下城', '江干', '拱墅', '西湖', '滨江', '之江', '下沙', '萧山', '余杭']
+    areas_list = ['萧山']
+    get_areas(areas_list)
